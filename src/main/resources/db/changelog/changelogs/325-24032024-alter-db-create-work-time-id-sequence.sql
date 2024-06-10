@@ -1,0 +1,6 @@
+
+DROP SEQUENCE IF EXISTS work_time_seq;
+
+CREATE SEQUENCE work_time_seq
+    START WITH 1
+    INCREMENT BY 1;

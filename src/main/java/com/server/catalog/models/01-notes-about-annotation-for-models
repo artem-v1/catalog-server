@@ -1,0 +1,9 @@
+this file has notes about annotation for generated models/entitys
+
+@Entity
+public class CitysDe {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "citysDeSeq")
+	@SequenceGenerator(name = "citysDeSeq", sequenceName = "citys_de_seq", allocationSize = 1)
+	private long citysDeId;

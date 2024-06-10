@@ -1,0 +1,2 @@
+ALTER TABLE city_names
+ALTER COLUMN language TYPE VARCHAR(255);

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+        
+    <!-- SQL code, that need to make tables into database   
+         <include file="changelogs/331-28032024-alter-table-reference.sql" relativeToChangelogFile="true"/>
+         
+    
+                      
+     <include file="changelogs/313-10032024-alter-table-company-char.sql" relativeToChangelogFile="true"/>
+     <include file="changelogs/302-06032024-create-offers.sql" relativeToChangelogFile="true"/>
+     <include file="changelogs/303-06032024-create-prices.sql" relativeToChangelogFile="true"/>
+     <include file="changelogs/304-06032024-create-company-charact.sql" relativeToChangelogFile="true"/>
+     <include file="changelogs/305-06032024-work-time.sql" relativeToChangelogFile="true"/>
+     <include file="changelogs/306-06032024-create-offer-charact.sql" relativeToChangelogFile="true"/>
+     <include file="changelogs/307-06032024-006-create-reviews.sql" relativeToChangelogFile="true"/>
+     <include file="changelogs/308-06032024-create-photos.sql" relativeToChangelogFile="true"/>
+    --> 
+     <!-- Другие include, если они есть
+        <include file="changelogs/27112023-008-create-companies2.sql" relativeToChangelogFile="true"/>
+        <include file="changelogs/27112023-009-create-contact_info2.sql" relativeToChangelogFile="true"/>
+        <include file="changelogs/27112023-010-create-segments2.sql" relativeToChangelogFile="true"/>
+        <include file="changelogs/27112023-011-create-segment_details2.sql" relativeToChangelogFile="true"/>
+        <include file="changelogs/27112023-012-create-users2.sql" relativeToChangelogFile="true"/>
+        <include file="changelogs/27112023-014-create-reviews2.sql" relativeToChangelogFile="true"/>
+        <include file="changelogs/27112023-013-create-segment_tags2.sql" relativeToChangelogFile="true"/>
+ -->
+    
+    <!--
+        <include file="changelogs/001-15112023-create-сitys-de.sql" relativeToChangelogFile="true"/>
+-->
+
+
+</databaseChangeLog>

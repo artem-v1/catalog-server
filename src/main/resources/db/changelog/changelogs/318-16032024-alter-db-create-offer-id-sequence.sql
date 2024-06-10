@@ -1,0 +1,5 @@
+DROP SEQUENCE IF EXISTS photo_seq;
+
+CREATE SEQUENCE photo_seq
+    START WITH 1
+    INCREMENT BY 1;

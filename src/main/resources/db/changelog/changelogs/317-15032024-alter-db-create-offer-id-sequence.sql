@@ -1,0 +1,5 @@
+DROP SEQUENCE IF EXISTS offer_seq;
+
+CREATE SEQUENCE offer_seq
+    START WITH 1
+    INCREMENT BY 1;

@@ -1,0 +1,237 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="User (generated)" id="1717804024136-1">
+        <createTable tableName="spatial_ref_sys">
+            <column name="srid" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="spatial_ref_sys_pkey"/>
+            </column>
+            <column name="auth_name" type="VARCHAR(256)"/>
+            <column name="auth_srid" type="INTEGER"/>
+            <column name="srtext" type="VARCHAR(2048)"/>
+            <column name="proj4text" type="VARCHAR(2048)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-2">
+        <createView fullDefinition="false" viewName="geography_columns">SELECT current_database() AS f_table_catalog,
+    n.nspname AS f_table_schema,
+    c.relname AS f_table_name,
+    a.attname AS f_geography_column,
+    postgis_typmod_dims(a.atttypmod) AS coord_dimension,
+    postgis_typmod_srid(a.atttypmod) AS srid,
+    postgis_typmod_type(a.atttypmod) AS type
+   FROM pg_class c,
+    pg_attribute a,
+    pg_type t,
+    pg_namespace n
+  WHERE ((t.typname = 'geography'::name) AND (a.attisdropped = false) AND (a.atttypid = t.oid) AND (a.attrelid = c.oid) AND (c.relnamespace = n.oid) AND (c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"])) AND (NOT pg_is_other_temp_schema(c.relnamespace)) AND has_table_privilege(c.oid, 'SELECT'::text));</createView>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-3">
+        <createView fullDefinition="false" viewName="geometry_columns">SELECT (current_database())::character varying(256) AS f_table_catalog,
+    n.nspname AS f_table_schema,
+    c.relname AS f_table_name,
+    a.attname AS f_geometry_column,
+    COALESCE(postgis_typmod_dims(a.atttypmod), sn.ndims, 2) AS coord_dimension,
+    COALESCE(NULLIF(postgis_typmod_srid(a.atttypmod), 0), sr.srid, 0) AS srid,
+    (replace(replace(COALESCE(NULLIF(upper(postgis_typmod_type(a.atttypmod)), 'GEOMETRY'::text), st.type, 'GEOMETRY'::text), 'ZM'::text, ''::text), 'Z'::text, ''::text))::character varying(30) AS type
+   FROM ((((((pg_class c
+     JOIN pg_attribute a ON (((a.attrelid = c.oid) AND (NOT a.attisdropped))))
+     JOIN pg_namespace n ON ((c.relnamespace = n.oid)))
+     JOIN pg_type t ON ((a.atttypid = t.oid)))
+     LEFT JOIN ( SELECT s.connamespace,
+            s.conrelid,
+            s.conkey,
+            replace(split_part(s.consrc, ''''::text, 2), ')'::text, ''::text) AS type
+           FROM ( SELECT pg_constraint.connamespace,
+                    pg_constraint.conrelid,
+                    pg_constraint.conkey,
+                    pg_get_constraintdef(pg_constraint.oid) AS consrc
+                   FROM pg_constraint) s
+          WHERE (s.consrc ~~* '%geometrytype(% = %'::text)) st ON (((st.connamespace = n.oid) AND (st.conrelid = c.oid) AND (a.attnum = ANY (st.conkey)))))
+     LEFT JOIN ( SELECT s.connamespace,
+            s.conrelid,
+            s.conkey,
+            (replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text))::integer AS ndims
+           FROM ( SELECT pg_constraint.connamespace,
+                    pg_constraint.conrelid,
+                    pg_constraint.conkey,
+                    pg_get_constraintdef(pg_constraint.oid) AS consrc
+                   FROM pg_constraint) s
+          WHERE (s.consrc ~~* '%ndims(% = %'::text)) sn ON (((sn.connamespace = n.oid) AND (sn.conrelid = c.oid) AND (a.attnum = ANY (sn.conkey)))))
+     LEFT JOIN ( SELECT s.connamespace,
+            s.conrelid,
+            s.conkey,
+            (replace(replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text), '('::text, ''::text))::integer AS srid
+           FROM ( SELECT pg_constraint.connamespace,
+                    pg_constraint.conrelid,
+                    pg_constraint.conkey,
+                    pg_get_constraintdef(pg_constraint.oid) AS consrc
+                   FROM pg_constraint) s
+          WHERE (s.consrc ~~* '%srid(% = %'::text)) sr ON (((sr.connamespace = n.oid) AND (sr.conrelid = c.oid) AND (a.attnum = ANY (sr.conkey)))))
+  WHERE ((c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"])) AND (NOT (c.relname = 'raster_columns'::name)) AND (t.typname = 'geometry'::name) AND (NOT pg_is_other_temp_schema(c.relnamespace)) AND has_table_privilege(c.oid, 'SELECT'::text));</createView>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-4">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="1" maxValue="9223372036854775807" minValue="1" sequenceName="citys_de_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-5">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="1" maxValue="9223372036854775807" minValue="1" sequenceName="companies_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-6">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="1" maxValue="9223372036854775807" minValue="1" sequenceName="company_characteristics_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-7">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="50" maxValue="9223372036854775807" minValue="1" sequenceName="offer_characteristic_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-8">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="1" maxValue="9223372036854775807" minValue="1" sequenceName="offer_characteristics_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-9">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="1" maxValue="9223372036854775807" minValue="1" sequenceName="offer_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-10">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="1" maxValue="9223372036854775807" minValue="1" sequenceName="photo_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-11">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="1" maxValue="9223372036854775807" minValue="1" sequenceName="price_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-12">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="1" maxValue="9223372036854775807" minValue="1" sequenceName="reference_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-13">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="1" maxValue="9223372036854775807" minValue="1" sequenceName="review_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-14">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="1" maxValue="9223372036854775807" minValue="1" sequenceName="work_time_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-15">
+        <createTable tableName="company">
+            <column name="latitude" type="FLOAT8"/>
+            <column name="longitude" type="FLOAT8"/>
+            <column name="company_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="company_pkey"/>
+            </column>
+            <column name="city" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="house" type="VARCHAR(255)"/>
+            <column name="land" type="VARCHAR(255)"/>
+            <column name="phone" type="VARCHAR(255)"/>
+            <column name="post_code" type="VARCHAR(255)"/>
+            <column name="street" type="VARCHAR(255)"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="location" type="GEOGRAPHY"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-16">
+        <createTable tableName="company_characteristic">
+            <column name="com_char_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="company_characteristic_pkey"/>
+            </column>
+            <column name="company_id" type="BIGINT"/>
+            <column name="char_category" type="VARCHAR(255)"/>
+            <column name="char_key" type="VARCHAR(255)"/>
+            <column name="icon" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-17">
+        <createTable tableName="offer">
+            <column name="company_id" type="BIGINT"/>
+            <column name="offer_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="offer_pkey"/>
+            </column>
+            <column name="category_offer" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="type" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-18">
+        <createTable tableName="offer_characteristic">
+            <column name="offer_char_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="offer_characteristic_pkey"/>
+            </column>
+            <column name="offer_id" type="BIGINT"/>
+            <column name="char_key" type="VARCHAR(255)"/>
+            <column name="char_value" type="VARCHAR(255)"/>
+            <column name="icon" type="VARCHAR(255)"/>
+            <column name="char_category" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-19">
+        <createTable tableName="photo">
+            <column name="company_id" type="BIGINT"/>
+            <column name="offer_id" type="BIGINT"/>
+            <column name="photo_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="photo_pkey"/>
+            </column>
+            <column name="photo_link" type="VARCHAR(255)"/>
+            <column name="photo_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-20">
+        <createTable tableName="price">
+            <column name="price" type="FLOAT8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company_id" type="BIGINT"/>
+            <column name="price_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="price_pkey"/>
+            </column>
+            <column name="info" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="unit" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-21">
+        <createTable tableName="review">
+            <column name="rating" type="FLOAT8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="review_like" type="INTEGER"/>
+            <column name="review_unlike" type="INTEGER"/>
+            <column name="company_id" type="BIGINT"/>
+            <column name="date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="review_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="review_pkey"/>
+            </column>
+            <column name="photo" type="VARCHAR(255)"/>
+            <column name="review_content" type="VARCHAR(255)"/>
+            <column name="title" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-22">
+        <createTable tableName="work_time">
+            <column name="end_time" type="time(6) WITHOUT TIME ZONE"/>
+            <column name="start_time" type="time(6) WITHOUT TIME ZONE"/>
+            <column name="company_id" type="BIGINT"/>
+            <column name="work_time_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="work_time_pkey"/>
+            </column>
+            <column name="day_of_week" type="VARCHAR(255)"/>
+            <column name="note" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-23">
+        <addForeignKeyConstraint baseColumnNames="company_id" baseTableName="company_characteristic" constraintName="fk3086c3gol9qu9yxs1fenpsj0p" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="company_id" referencedTableName="company" validate="true"/>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-24">
+        <addForeignKeyConstraint baseColumnNames="company_id" baseTableName="offer" constraintName="fkbmi8uq5jg84sgudvncfjbupw6" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="company_id" referencedTableName="company" validate="true"/>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-25">
+        <addForeignKeyConstraint baseColumnNames="offer_id" baseTableName="offer_characteristic" constraintName="fkcb54q13b444ri3yolf6xu8c67" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="offer_id" referencedTableName="offer" validate="true"/>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-26">
+        <addForeignKeyConstraint baseColumnNames="offer_id" baseTableName="photo" constraintName="fkfmoqky5os51fmew94gjwvmv2c" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="offer_id" referencedTableName="offer" validate="true"/>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-27">
+        <addForeignKeyConstraint baseColumnNames="company_id" baseTableName="price" constraintName="fkgfgv4prhcmwpg904lucqnpmmh" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="company_id" referencedTableName="company" validate="true"/>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-28">
+        <addForeignKeyConstraint baseColumnNames="company_id" baseTableName="review" constraintName="fki5shahl8n70t5m6pctqjww2ss" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="company_id" referencedTableName="company" validate="true"/>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-29">
+        <addForeignKeyConstraint baseColumnNames="company_id" baseTableName="photo" constraintName="fkk1344l62823t3d3mj3vdwj5dv" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="company_id" referencedTableName="company" validate="true"/>
+    </changeSet>
+    <changeSet author="User (generated)" id="1717804024136-30">
+        <addForeignKeyConstraint baseColumnNames="company_id" baseTableName="work_time" constraintName="fksuf78t1fiam6kfdpi7k3hp57h" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="company_id" referencedTableName="company" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

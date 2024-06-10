@@ -1,0 +1,6 @@
+DROP SEQUENCE IF EXISTS price_seq;
+
+
+CREATE SEQUENCE price_seq
+    START WITH 1
+    INCREMENT BY 1;

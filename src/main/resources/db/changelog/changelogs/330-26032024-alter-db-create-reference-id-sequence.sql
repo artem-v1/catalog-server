@@ -1,0 +1,6 @@
+
+DROP SEQUENCE IF EXISTS reference_seq;
+
+CREATE SEQUENCE reference_seq
+    START WITH 1
+    INCREMENT BY 1;
