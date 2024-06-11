@@ -3,7 +3,7 @@
 ## Objective
 To demonstrate my web application development skills to potential employers.
 
-##Scope
+## Scope
 - Backend: Java 17, Spring Boot, Hibernate, Liquibase
 - Frontend: Angular 17 (hosted separately in the same GitHub account)
 - Database: PostgreSQL (for backup loading - https://drive.google.com/drive/folders/1CdQfjHnL1k06C6IhJvxfW__enuskEPK1?usp=drive_link )
