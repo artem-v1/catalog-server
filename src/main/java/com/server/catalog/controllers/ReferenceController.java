@@ -24,12 +24,6 @@ public class ReferenceController {
 	@Autowired
 	private ReferenceService referenceService;
 	
-//	@GetMapping("/")
-//	public ResponseEntity<String> getReferenceValueByKey(@RequestBody String key){
-//		String referenceValue = referenceService.getReferenceValueByKey(key);
-//		return new ResponseEntity<String>(referenceValue, HttpStatus.OK);
-//	}
-	
 	@GetMapping("/all")
 	public ResponseEntity<List<ReferenceDTO>> getAllReferences(){
 		List<ReferenceDTO> referenceDTOList = referenceService.getAllReferences();
@@ -41,43 +35,10 @@ public class ReferenceController {
 		return new ResponseEntity<List<ReferenceDTO>>(referenceDTOList, HttpStatus.OK);
 	}
 	
-	
-//	@GetMapping("/all")
-//	public ResponseEntity<List<Reference>> getAllReferences(){
-//		List<Reference> references = referenceService.getAllReferences();
-//		return new ResponseEntity<List<Reference>>(references, HttpStatus.OK);
-//	}
-	
-	
-	//можно тестить
-//	@PostMapping("/save-cat")
-//	public ResponseEntity<List<Reference>> saveCategoryByCompanyId(@RequestBody List<CategoryDtoTEMP> categoryDtoList){
-//		List<Reference> savedCategoryList = referenceService.saveCategoryDTOList(categoryDtoList);
-//		return (ResponseEntity<List<Reference>>) new ResponseEntity<List<Reference>>(savedCategoryList, HttpStatus.OK);
-//	}
-//	
-//	//сделать теперь метод для сохранения характеристик
-//	//+сервисній слой
-//	//можно тестить
-//	@PostMapping("/save-char")
-//	public ResponseEntity<List<Reference>> saveCharByCompanyId(@RequestBody List<СharacteristicDtoTEMP> charDtoList){
-//		List<Reference> savedCharList = referenceService.saveCharDTOList(charDtoList);
-//		return (ResponseEntity<List<Reference>>) new ResponseEntity<List<Reference>>(savedCharList, HttpStatus.OK);
-//	}
-	
-//	@PostMapping("/save-char")
-//	public ResponseEntity<List<Reference>> saveCharByCompanyId(@RequestBody List<СharacteristicDtoTEMP> charDtoList){
-//		List<Reference> savedCharList = referenceService.saveCharDTOList(charDtoList);
-//		return (ResponseEntity<List<Reference>>) new ResponseEntity<List<Reference>>(savedCharList, HttpStatus.OK);
-//	}
-	
 	@PostMapping("/save-ref")
 	public ResponseEntity<List<ReferenceDTO>> saveReferences(@RequestBody List<ReferenceDTO> refDTOList){
 		List<ReferenceDTO> savedRefDTOList = referenceService.saveReferences(refDTOList);
 		return (ResponseEntity<List<ReferenceDTO>>) new ResponseEntity<List<ReferenceDTO>>(savedRefDTOList, HttpStatus.OK);
 	}
-	
-	
-	
 	
 }
