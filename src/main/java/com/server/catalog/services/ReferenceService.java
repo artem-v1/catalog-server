@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.server.catalog.DTO.ReferenceDTO;
+import com.server.catalog.DTO.CompanyDTO.OfferDTO;
+import com.server.catalog.models.Photo;
 import com.server.catalog.models.Reference;
 import com.server.catalog.repositorys.referenceRepository;
 
@@ -30,6 +32,33 @@ public class ReferenceService {
 		return ReferenceDTOList;
 	}
 	
+	public List<ReferenceDTO> saveReferences(List<ReferenceDTO> refDTOList){
+		
+		List<Reference> refList = refDTOList.stream()
+				.map(refDTO -> convertToEntity(refDTO))
+				.collect(Collectors.toList());
+		
+		List<Reference> savedReferences = referenceRepository.saveAll(refList);
+		
+		return savedReferences.stream()
+				.map(ref -> convertToDTO(ref))
+				.collect(Collectors.toList());
+		
+		
+//		List<Photo> photoList = photoDTOList.stream()
+//				.map(photoDTO -> convertToEntity(new Photo(), photoDTO))
+//				.collect(Collectors.toList());
+//		
+//		List<Photo> savedPhotosList = photoRepository.saveAll(photoList);				
+//		
+//		return savedPhotosList
+//				.stream()
+//				.map(photo -> convertToDTO(photo))
+//				.collect(Collectors.toList());
+		
+		
+	}
+	
 
 	public ReferenceDTO convertToDTO(Reference reference) {
 		
@@ -43,6 +72,20 @@ public class ReferenceService {
 		referenceDTO.setSortOrder(reference.getSortOrder());
 
 		return referenceDTO;
+	}
+	
+	public Reference convertToEntity(ReferenceDTO refDTO) {
+		
+		Reference ref = new Reference();
+		
+		ref.setReferenceId(refDTO.getReferenceId());
+		ref.setScope(refDTO.getScope());
+		ref.setKey(refDTO.getKey());
+		ref.setValue(refDTO.getValue());
+		ref.setIcon(ref.getIcon());
+		ref.setSortOrder(refDTO.getSortOrder());
+		
+		return ref;
 	}
 
 //	public List<Reference> saveCategoryDTOList(List<CategoryDtoTEMP> categoryDtoList) {

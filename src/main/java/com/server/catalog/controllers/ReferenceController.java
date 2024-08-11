@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,7 +49,7 @@ public class ReferenceController {
 //	}
 	
 	
-//	//можно тестить
+	//можно тестить
 //	@PostMapping("/save-cat")
 //	public ResponseEntity<List<Reference>> saveCategoryByCompanyId(@RequestBody List<CategoryDtoTEMP> categoryDtoList){
 //		List<Reference> savedCategoryList = referenceService.saveCategoryDTOList(categoryDtoList);
@@ -63,6 +64,20 @@ public class ReferenceController {
 //		List<Reference> savedCharList = referenceService.saveCharDTOList(charDtoList);
 //		return (ResponseEntity<List<Reference>>) new ResponseEntity<List<Reference>>(savedCharList, HttpStatus.OK);
 //	}
+	
+//	@PostMapping("/save-char")
+//	public ResponseEntity<List<Reference>> saveCharByCompanyId(@RequestBody List<СharacteristicDtoTEMP> charDtoList){
+//		List<Reference> savedCharList = referenceService.saveCharDTOList(charDtoList);
+//		return (ResponseEntity<List<Reference>>) new ResponseEntity<List<Reference>>(savedCharList, HttpStatus.OK);
+//	}
+	
+	@PostMapping("/save-ref")
+	public ResponseEntity<List<ReferenceDTO>> saveReferences(@RequestBody List<ReferenceDTO> refDTOList){
+		List<ReferenceDTO> savedRefDTOList = referenceService.saveReferences(refDTOList);
+		return (ResponseEntity<List<ReferenceDTO>>) new ResponseEntity<List<ReferenceDTO>>(savedRefDTOList, HttpStatus.OK);
+	}
+	
+	
 	
 	
 }
