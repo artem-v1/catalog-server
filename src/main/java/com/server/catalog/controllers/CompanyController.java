@@ -24,7 +24,7 @@ public class CompanyController {
 	@Autowired
     private CompanyService companyService;
 		
-    @GetMapping("/all-data/{id}")
+    @GetMapping("/details/{id}")
     public ResponseEntity<CompanyDTO> getCompanyAllDataById(@PathVariable Long id) {
         CompanyDTO companyDTO = companyService.getCompanyAllDataById(id);
         if (companyDTO == null) {
