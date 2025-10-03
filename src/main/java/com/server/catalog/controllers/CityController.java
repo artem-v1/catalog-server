@@ -3,21 +3,38 @@ package com.server.catalog.controllers;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.locationtech.jts.awt.PointShapeFactory.Point;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.server.catalog.DTO.CityDTO;
 import com.server.catalog.models.City;
 import com.server.catalog.models.CityName;
 import com.server.catalog.services.CityService;
 
 @RestController
-@RequestMapping("/api/tech")
-public class techAdminController {
+@RequestMapping("/api/cities")
+public class CityController {
 
 	@Autowired
 	CityService cityService;
+	
+    @GetMapping("/search")
+    public ResponseEntity<List<CityDTO>> searchCities(@RequestParam String query) {
+        List<CityDTO> cities = cityService.searchCities(query);
+        if (cities.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 204, если ничего не найдено
+        }
+        return ResponseEntity.ok(cities); // 200 с данными
+    }
+	
 	
 //    @GetMapping("/setCities")
 //    public void setAllCities() throws Exception {
@@ -83,7 +100,7 @@ public class techAdminController {
 
 	@GetMapping("/by-radius")
 	public void getCitiesByRadius(){
-		List<City> cities = cityService.getCitiesByRadius(7.8169251, 52.2217481, 25000);
+		List<City> cities = cityService.getCitiesByRadius(7.8169251, 52.2217481, 5000);
 		cities.stream().forEach(el -> {
 			el.getCityNames().forEach(elNames -> {
 				String lang = elNames.getId().getLanguage();
@@ -92,13 +109,43 @@ public class techAdminController {
 					count += 1;
 					String name = elNames.getId().getName();
 					System.out.println("!!!!!!!!!!!!!!!!!!City in radius: " + name + " " + count);
+					System.out.println("!!!!!!!!!!!!!!!!!!point: " + el.getLocation());
+					System.out.println("!!!!!!!!!!!!!!!!!!point: " + el.getLocation());
 					
 				}
 			});
 		});
 
 	}
+//	
+//	@Autowired
+//	private GeometryFactory geometryFactory;
+	
+	@GetMapping("/locat/radius")
+	public void getCitiesByPointAndRadius(){
+//		List<City> cities = cityService.getCitiesByRadius(7.8169251, 52.2217481, 5000);
+        GeometryFactory geometryFactory = new GeometryFactory();
+        org.locationtech.jts.geom.Point center = geometryFactory.createPoint(new Coordinate(7.8169251, 52.2217481));
+        center.setSRID(4326); 
+		List<City> cities = cityService.findCitiesByPointAndRadius(center, 5000); //Radius(7.8169251, 52.2217481, 5000);
 
+		cities.stream().forEach(el -> {
+			el.getCityNames().forEach(elNames -> {
+				String lang = elNames.getId().getLanguage();
+				
+				if (lang.equals("name")) {
+					count += 1;
+					String name = elNames.getId().getName();
+					
+					System.out.println("!!!!!!!!!!!!!!!!!!City: " + name);
+					System.out.println("!!!!!!!!!!!!!!!!!!param1: " + el.getLongitude() + "; Param2: " + el.getLatitude());
+					System.out.println("!!!!!!!!!!!!!!!!!!point: " + el.getLocation());
+					
+				}
+			});
+		});
+
+	}
 
 	
 	
