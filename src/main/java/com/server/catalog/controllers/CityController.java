@@ -35,7 +35,7 @@ public class CityController {
         return ResponseEntity.ok(cities); // 200 с данными
     }
 	
-	
+	 
 //    @GetMapping("/setCities")
 //    public void setAllCities() throws Exception {
 //    	

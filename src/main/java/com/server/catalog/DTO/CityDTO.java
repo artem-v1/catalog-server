@@ -16,6 +16,8 @@ public class CityDTO {
     private Point location;
     private Set<CityNameDTO> cityNames;
     private Set<CityTagDTO> cityTags;
+    
+    private String displayName;
 
     public CityDTO() {
         this.cityNames = new HashSet<>();
@@ -87,7 +89,15 @@ public class CityDTO {
         this.cityTags = cityTags;
     }
 
-    // Inner DTO classes for CityName and CityTag
+    public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	// Inner DTO classes for CityName and CityTag
     public static class CityNameDTO {
         private String language;
         private String name;

@@ -1,5 +1,7 @@
 package com.server.catalog.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -28,6 +30,7 @@ public class CityName implements java.io.Serializable {
 	@ManyToOne
 	@MapsId("cityNameId") //указывает на то поле композитного ключа, которое связано с первичным ключом главной таблицы
 	@JoinColumn(name = "city_name_id") // Указывает на столбец внешнего ключа в таблице CityTags
+	@JsonBackReference // исключает бесконечную обратную рекрусию
 	private City city;
 
 	public CityName() {

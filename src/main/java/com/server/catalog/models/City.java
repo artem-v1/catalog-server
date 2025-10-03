@@ -10,6 +10,8 @@ import org.geolatte.geom.Geometry;
 import org.hibernate.spatial.dialect.postgis.PGGeographyJdbcType;
 import org.locationtech.jts.geom.Point;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -48,7 +50,9 @@ public class City implements java.io.Serializable {
 	
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CityTag> cityTags = new HashSet<CityTag>(0);
+    
     @OneToMany(mappedBy = "city",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
 	private Set<CityName> cityNames = new HashSet<CityName>(0);
     
 

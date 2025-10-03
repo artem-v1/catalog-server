@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.server.catalog.DTO.CompanyDTO.CompanyCharacteristicDTO;
 import com.server.catalog.DTO.CompanyDTO.CompanyDTO;
+import com.server.catalog.models.City;
 import com.server.catalog.models.Company;
 import com.server.catalog.repositorys.CompanyRepository;
 
@@ -125,6 +126,12 @@ public class CompanyService {
 		}
 		companyRepository.deleteById(id);
 
+	}
+
+	public List<CompanyDTO> findCompaniesByRadius(double longitude, double latitude, double radius) {
+		List<Company> companies = companyRepository.findCompaniesByRadius(longitude, latitude, radius);
+	
+		return companies.stream().map(this::convertToDTO).collect(Collectors.toList());
 	}
 
 }

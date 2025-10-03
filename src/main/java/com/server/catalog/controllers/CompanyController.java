@@ -3,6 +3,7 @@ package com.server.catalog.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.Point;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.server.catalog.DTO.CompanyDTO.CompanyDTO;
+import com.server.catalog.models.City;
+import com.server.catalog.repositorys.CompanyRepository;
 import com.server.catalog.services.CompanyService;
 
 @RestController
@@ -60,4 +63,17 @@ public class CompanyController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
+    
+//    @GetMapping("/{location}/{radius}")
+//    public List<City> getCompaniesByPointAndRadius(@PathVariable Point locationPoint , double radius) {
+//        return CompanyRepository.findCompaniesByPointAndRadius(locationPoint, radius);
+//    }
+    
+    
+    @GetMapping("/{longitude}/{latitude}/{radius}")
+    public ResponseEntity<List<CompanyDTO>> getCompaniesByPointAndRadius(@PathVariable double longitude, @PathVariable double latitude, @PathVariable double radius) {
+        List<CompanyDTO> result = companyService.findCompaniesByRadius(longitude, latitude, radius);
+        return ResponseEntity.ok(result);
+	}    
+    
 }

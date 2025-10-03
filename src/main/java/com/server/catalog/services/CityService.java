@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.server.catalog.DTO.CitiesElementFromJsonDTO;
 import com.server.catalog.DTO.CitiesRootInfoFromJsonDTO;
+import com.server.catalog.DTO.CityDTO;
 import com.server.catalog.models.City;
 import com.server.catalog.models.CityName;
 import com.server.catalog.models.CityNameId;
@@ -130,7 +132,42 @@ public class CityService {
     public List<City> getCitiesByRadius(double latitude, double longitude, double radius) {
         return citiesRepository.findCitiesByRadius(latitude, longitude, radius);
     }
+
+	public List<City> findCitiesByPointAndRadius(Point center, int radius) {
+		return citiesRepository.findCitiesByPointAndRadius(center, radius);
+	}
+
+
+    public List<CityDTO> searchCities(String query) {
+        return citiesRepository.findByNameContainingIgnoreCase(query)
+                .stream()
+                .map(this::toDTO)
+                .toList();
+    }
     
+
+    private CityDTO toDTO(City city) {
+        CityDTO dto = new CityDTO();
+        dto.setCityId(city.getCityId());
+        dto.setLatitude(city.getLatitude());
+        dto.setLongitude(city.getLongitude());
+        dto.setPopulation(city.getPopulation());
+        dto.setPopulationDate(city.getPopulationDate());
+        //нельзя отправлять - потому что будет бесконечная рекрусия
+//        dto.setLocation(city.getLocation());
+
+        // Берём displayName напрямую через один стрим
+        String displayName = city.getCityNames().stream()
+            .map(CityName::getId)
+            .filter(id -> "name".contains(id.getLanguage()))
+            .map(CityNameId::getName)
+            .findFirst()
+            .orElse("");
+
+        dto.setDisplayName(displayName);
+        return dto;
+    }
+
 
 }
 
